@@ -2,11 +2,20 @@
 //
 
 #include <iostream>
+#include "World.h"
 using namespace std;
 
 int main()
 {
     cout << "Welcome to my Zork!\n";
+	World myZorkWorld = World();
+
+	//myZorkWorld.showRoomsDescriptions();
+
+	cout << "----------------------------" << endl;
+
+	//myZorkWorld.showWorldElements();
+
 }
 
 // Ejecutar programa: Ctrl + F5 o menú Depurar > Iniciar sin depurar

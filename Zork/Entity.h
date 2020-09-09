@@ -3,20 +3,22 @@
 #include <string>
 
 using namespace std;
+
+enum EntityType {
+	entity,
+	creature,
+	wayOut,
+	room,
+	item,
+	npc,
+	player
+};
+
 class Entity
 {
-	enum EntityType {
-		entity,
-		creature,
-		exit,
-		room,
-		item,
-		npc,
-		player
-	};
 
 public:
-	Entity();
+	Entity(string name, string description);
 	~Entity();
 
 public:

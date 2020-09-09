@@ -1,22 +1,27 @@
 #pragma once
+#include <vector>
 #include "Entity.h"
 
 class Room;
 
+enum DirectionType {
+	north,
+	south,
+	east,
+	west
+
+};
+
+
+
 class Exit : public Entity
 {
-	enum DirectionType
-	{
-		north,
-		south,
-		east,
-		weast
-
-	};
 
 public:
-	Exit();
+	Exit(string name, string description, Room *source, Room *destination, DirectionType direction, bool isLocked);
 	~Exit();
+
+	void showDescription();
 
 public:
 	Room* source;
@@ -24,5 +29,7 @@ public:
 	DirectionType direction;
 	bool isLocked;
 
+private:
+	vector<string> types = { "north", "south", "east", "west" };
 };
 

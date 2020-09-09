@@ -6,6 +6,8 @@ public:
 	Creature();
 	~Creature();
 
+	void showDescription();
+
 public:
 	int hp; //Health points
 };

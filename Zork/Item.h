@@ -6,6 +6,8 @@ public:
 	Item();
 	~Item();
 
+	void showDescription();
+
 public:
 	bool take;
 	bool container;
