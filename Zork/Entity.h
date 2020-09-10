@@ -1,6 +1,8 @@
 #pragma once
 #include <list>
 #include <string>
+#include <iostream>
+#include <vector>
 
 using namespace std;
 
@@ -21,11 +23,17 @@ public:
 	Entity(string name, string description);
 	~Entity();
 
+	virtual void showDescription();
+	void changeLocation(Entity* newLocation);
+	Entity* getEntity(string name, EntityType type);
+	void getEntityElements(list<Entity*>& inventory);
+
+
 public:
 	EntityType type;
 	string name;
 	string description;
-	Entity* location; //Where is the entity
+	Entity* location; //Where is the entity, if not a room
 	list<Entity*> entityElements; //Objects inside an Entity like an object inside a room
 
 };

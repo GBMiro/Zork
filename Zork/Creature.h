@@ -1,12 +1,14 @@
 #pragma once
 #include "Entity.h"
+#include "Room.h"
 class Creature : public Entity
 {
 public:
-	Creature();
+	Creature(string name, string description);
 	~Creature();
 
 	void showDescription();
+	Room* getRoom() const;
 
 public:
 	int hp; //Health points

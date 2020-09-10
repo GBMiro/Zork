@@ -28,8 +28,6 @@ public:
 	Room* destination;
 	DirectionType direction;
 	bool isLocked;
-
-private:
 	vector<string> types = { "north", "south", "east", "west" };
 };
 

@@ -2,8 +2,14 @@
 //
 
 #include <iostream>
+#include <conio.h>
+#include <vector>
 #include "World.h"
 using namespace std;
+
+bool compare(const string& first, const string& second) {
+	return _stricmp(first.c_str(), second.c_str()) == 0;
+}
 
 int main()
 {
@@ -16,7 +22,67 @@ int main()
 
 	//myZorkWorld.showWorldElements();
 
+	bool gameOnGoing = true;
+
+	char nextChar;
+
+	string line = "";
+
+	vector<string> command;
+
+	command.push_back("look");
+
+	while (1) {
+
+		if (_kbhit() != 0) {
+
+			nextChar = _getch();
+
+			if (nextChar == '\r') {
+				size_t pos = 0;
+				string word;
+				string delimiter = " ";
+
+				while ((pos = line.find(delimiter)) != string::npos) {
+					word = line.substr(0, pos);
+					line.erase(0, pos + delimiter.length());
+					command.push_back(word);
+				}
+				command.push_back(line); // Last word
+				cout << endl;
+			}
+			else if (nextChar == '\b') { //Backspace found
+				if (line.length() > 0) {
+					line.pop_back();
+					cout << '\b';
+					cout << " ";
+					cout << '\b';
+				}
+			}
+			else {
+				line += nextChar;
+				cout << nextChar;
+			}
+		}
+
+		if (command.size() > 0 && compare(command[0], "quit")) {
+			break;
+		}
+
+		if (command.size() > 0 && !myZorkWorld.executeCommand(command)) {
+			cout << "Sorry this command does not exist. Type \"help\" to see an available command list" << endl;
+		}
+
+		if (command.size() > 0) {
+			line = "";
+			command.clear();
+		}
+	}
+
+	cout << "Thank you for playing" << endl;
 }
+
+
 
 // Ejecutar programa: Ctrl + F5 o menú Depurar > Iniciar sin depurar
 // Depurar programa: F5 o menú Depurar > Iniciar depuración

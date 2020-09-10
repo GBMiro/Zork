@@ -2,6 +2,8 @@
 #include "World.h"
 #include "Room.h"
 #include "Exit.h"
+#include "Player.h"
+#include "Item.h"
 
 World::World()
 {
@@ -14,9 +16,13 @@ World::~World()
 {
 }
 
+bool compareWorld(const string& first, const string& second) {
+	return _stricmp(first.c_str(), second.c_str()) == 0;
+}
+
 void World::createWorld()
 {
-	//Create Rooms
+	//Create Rooms, Exits and connections
 	Room* room1 = new Room("Room 1", "This is the first room of the game");
 	Room* room2 = new Room("Room 2", "Bottom left room");
 	Room* room3 = new Room("Room 3", "Bottom right room");
@@ -68,6 +74,22 @@ void World::createWorld()
 	room1->entityElements.push_back(from1toFinal);
 	finalRoom->entityElements.push_back(fromFinalto1);
 
+	//Create Items
+	Item* dagga = new Item("Dagga", "A small dagga. Sometimes less is more");
+	Item* key = new Item("Key", "Old key. Maybe it will take you to your doom");
+	Item* note = new Item("Note", "It says \"I can no longer fight that beast...\"");
+
+	dagga->changeLocation(room4);
+	key->changeLocation(room5);
+	note->changeLocation(room1);
+
+	//Create player
+	newPlayer = new Player("Link", "Our hero for this adventure");
+
+	this->worldElements.push_back(newPlayer);
+
+	newPlayer->changeLocation(room1);
+
 	this->worldElements.push_back(room1);
 	this->worldElements.push_back(room2);
 	this->worldElements.push_back(room3);
@@ -85,6 +107,10 @@ void World::createWorld()
 	this->worldElements.push_back(from5to3);
 	this->worldElements.push_back(from1toFinal);
 	this->worldElements.push_back(fromFinalto1);
+
+	this->worldElements.push_back(dagga);
+	this->worldElements.push_back(note);
+	this->worldElements.push_back(key);
 }
 
 void World::showRoomsDescriptions() {
@@ -104,6 +130,52 @@ void World::showWorldElements() {
 			((Exit *)*iter)->showDescription();
 		}
 	}
+}
+
+bool World::executeCommand(vector<string>& command) {
+	bool found = true;
+
+	switch (command.size()) {
+		case 1: {
+			if (compareWorld(command[0], "look")) {
+				newPlayer->showDescription(command);
+			}
+			else if (compareWorld(command[0], "north")) {
+				newPlayer->go(command);
+			}
+			else if (compareWorld(command[0], "south")) {
+				newPlayer->go(command);
+			}
+			else if (compareWorld(command[0], "east")) {
+				newPlayer->go(command);
+			}
+			else if (compareWorld(command[0], "west")) {
+				newPlayer->go(command);
+			}
+			else if (compareWorld(command[0], "inventory")) {
+				newPlayer->showInventory();
+			}
+			else {
+				found = false;
+			}
+			break;
+		}
+		case 2: {
+			if (compareWorld(command[0], "take")) {
+				newPlayer->take(command);
+			}
+			else if (compareWorld(command[0], "drop")) {
+				newPlayer->drop(command);
+			}
+			else {
+				found = false;
+			}
+			break;
+		}
+		default:
+			found = false;
+	}
+	return found;
 }
 
 

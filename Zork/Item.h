@@ -3,7 +3,7 @@
 class Item : public Entity
 {
 public:
-	Item();
+	Item(string name, string description);
 	~Item();
 
 	void showDescription();

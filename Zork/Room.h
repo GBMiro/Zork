@@ -1,5 +1,6 @@
 #pragma once
 #include "Entity.h"
+#include "Exit.h"
 
 class Room : public Entity
 {
@@ -8,5 +9,7 @@ public:
 	~Room();
 
 	void showDescription();
+
+	Exit* getExit(const string& dir) const;
 };
 
