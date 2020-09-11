@@ -12,7 +12,13 @@ public:
 	void go(const vector<string>& dir);
 	void take(const vector<string>& object);
 	void drop(const vector<string>& object);
-	virtual void showInventory();
+	void open(const vector<string>& action);
+	void close(const vector<string>& action);
+
+	void talkNPC(const vector<string>& action);
+	void answerNPC(const vector<string>& action);
+
+	void showInventory(); //virtual
 };
 
 

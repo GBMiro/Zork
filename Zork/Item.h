@@ -3,13 +3,13 @@
 class Item : public Entity
 {
 public:
-	Item(string name, string description);
+	Item(string name, string description, bool storage, bool canBeTaken);
 	~Item();
 
 	void showDescription();
 
 public:
-	bool take;
-	bool container;
+	bool storage;
+	bool canBeTaken;
 };
 

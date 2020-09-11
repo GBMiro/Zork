@@ -7,7 +7,7 @@ public:
 	Creature(string name, string description);
 	~Creature();
 
-	void showDescription();
+	virtual void showDescription();
 	Room* getRoom() const;
 
 public:

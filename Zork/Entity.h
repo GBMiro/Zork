@@ -26,7 +26,8 @@ public:
 	virtual void showDescription();
 	void changeLocation(Entity* newLocation);
 	Entity* getEntity(string name, EntityType type);
-	void getEntityElements(list<Entity*>& inventory);
+	void getEntityElements(list<Entity*>& elements);
+	void getEntityElementsByType(list<Entity*>& elements, EntityType type);
 
 
 public:

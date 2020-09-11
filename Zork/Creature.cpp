@@ -12,6 +12,7 @@ Creature::~Creature()
 
 void Creature::showDescription()
 {
+	cout << name << ": " << description << endl;
 }
 
 Room* Creature::getRoom() const

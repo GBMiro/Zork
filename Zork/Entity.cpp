@@ -39,9 +39,18 @@ Entity* Entity::getEntity(string name, EntityType type)
 	return NULL;
 }
 
-void Entity::getEntityElements(list<Entity*>& inventory)
+void Entity::getEntityElements(list<Entity*>& elements)
 {
 	for (list<Entity*>::iterator iter = entityElements.begin(); iter != entityElements.end(); ++iter) {
-		inventory.push_back(*iter);
+		elements.push_back(*iter);
+	}
+}
+
+void Entity::getEntityElementsByType(list<Entity*>& elements, EntityType type)
+{
+	for (list<Entity*>::iterator iter = entityElements.begin(); iter != entityElements.end(); ++iter) {
+		if ((*iter)->type == type) {
+			elements.push_back(*iter);
+		}
 	}
 }

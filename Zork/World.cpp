@@ -4,6 +4,7 @@
 #include "Exit.h"
 #include "Player.h"
 #include "Item.h"
+#include "NPC.h"
 
 World::World()
 {
@@ -22,7 +23,7 @@ bool compareWorld(const string& first, const string& second) {
 
 void World::createWorld()
 {
-	//Create Rooms, Exits and connections
+	//Create Rooms
 	Room* room1 = new Room("Room 1", "This is the first room of the game");
 	Room* room2 = new Room("Room 2", "Bottom left room");
 	Room* room3 = new Room("Room 3", "Bottom right room");
@@ -30,65 +31,74 @@ void World::createWorld()
 	Room* room5 = new Room("Room 5", "Upper right room");
 	Room* finalRoom = new Room("Final Room", "This is the final room. Accessible from room 1");
 
-
-	Exit* from1to2 = new Exit("Room1to2", "Passage from room 1 to room 2", room1, room2, west, false);
-	Exit* from2to1 = new Exit("Room2to1", "Passage from room 2 to room 1", room2, room1, east, false);
-
-	from1to2->location = room1;
-	from2to1->location = room2;
-
-	room1->entityElements.push_back(from1to2);
-	room2->entityElements.push_back(from2to1);
-
-	Exit* from1to3 = new Exit("Room1to3", "Passage from room 1 to room 3", room1, room3, east, false);
-	Exit* from3to1 = new Exit("Room3to1", "A Passage from room 3 to room 1", room3, room1, west, false);
-
-	from1to3->location = room1;
-	from3to1->location = room3;
-
-	room1->entityElements.push_back(from1to3);
-	room3->entityElements.push_back(from3to1);
-
-	Exit* from2to4 = new Exit("Room2to4", "Passage from room 2 to room 4", room2, room4, north, false);
-	Exit* from4to2 = new Exit("Room4to2", "Passage from room 4 to room 2", room4, room2, south, false);
-
-	from2to4->location = room2;
-	from4to2->location = room4;
-
-	room2->entityElements.push_back(from2to4);
-	room4->entityElements.push_back(from4to2);
-
-	Exit* from3to5 = new Exit("Room3to5", "Passage from room 3 to room 5", room3, room5, north, false);
-	Exit* from5to3 = new Exit("Room5to3", "Passage from room 5 to room 3", room5, room3, south, false);
-
-	from3to5->location = room3;
-	from5to3->location = room5;
-
-	room3->entityElements.push_back(from3to5);
-	room5->entityElements.push_back(from5to3);
-
-	Exit* from1toFinal = new Exit("What lies ahead", "A passage to the unknown", room1, finalRoom, north, false);
-	Exit* fromFinalto1 = new Exit("Back to the entrance", "A dark passage", finalRoom, room1, south, false);
-
-
-	room1->entityElements.push_back(from1toFinal);
-	finalRoom->entityElements.push_back(fromFinalto1);
-
 	//Create Items
-	Item* dagga = new Item("Dagga", "A small dagga. Sometimes less is more");
-	Item* key = new Item("Key", "Old key. Maybe it will take you to your doom");
-	Item* note = new Item("Note", "It says \"I can no longer fight that beast...\"");
+	Item* dagga = new Item("Dagga", "A small dagga. Sometimes less is more", false, true);
+	Item* key = new Item("Key", "Old key. Maybe it will take you to your doom", false, true);
+	Item* note = new Item("Note", "It says \"I can no longer fight that beast...\"", false, true);
+	Item* box = new Item("Box", "To store some items", true, true);
+	Item* table = new Item("Table", "An old table. It would be perfect to start a bonfire...", false, false);
 
 	dagga->changeLocation(room4);
 	key->changeLocation(room5);
-	note->changeLocation(room1);
+	note->changeLocation(box);
+	box->changeLocation(room1);
+	table->changeLocation(room1);
+
+	//Create Creatures
+	Creature* troll = new Creature("Troll", "A cavern troll");
+	Creature* dragon = new Creature("Dragon", "From another world. It's your last trial. Beat it, and you will be long remembered.");
+
+	troll->changeLocation(room5);
+	dragon->changeLocation(finalRoom);
+
+	//Create NPC
+	string dialog = 
+		"This is your wisdom trial. "
+		"Answer my riddle and the way will open. But be aware though only 3 guesses you will have...\n"
+		"\"I am the beginning of everything, the end of everywhere.\n I am the beginning of eternity, the end of time and space...\n"
+		" What am I?\"\n"
+		"I'll be waiting your answer...";
+
+	NPC* sphinx = new NPC("Sphinx", "A lost sphinx. It likes riddles", dialog, true, "e");
+	sphinx->changeLocation(room2);
+
+	//Create Connections
+	Exit* from1to2 = new Exit("Room1to2", "Passage from room 1 to room 2", room1, room2, west, false, NULL);
+	Exit* from2to1 = new Exit("Room2to1", "Passage from room 2 to room 1", room2, room1, east, false, NULL);
+
+	from1to2->changeLocation(room1);
+	from2to1->changeLocation(room2);
+
+	Exit* from1to3 = new Exit("Room1to3", "Passage from room 1 to room 3", room1, room3, east, false, NULL);
+	Exit* from3to1 = new Exit("Room3to1", "A Passage from room 3 to room 1", room3, room1, west, false, NULL);
+
+	from1to3->changeLocation(room1);
+	from3to1->changeLocation(room3);
+
+	Exit* from2to4 = new Exit("Room2to4", "Passage from room 2 to room 4", room2, room4, north, true, NULL);
+	Exit* from4to2 = new Exit("Room4to2", "Passage from room 4 to room 2", room4, room2, south, false, NULL);
+
+	from2to4->changeLocation(room2);
+	from4to2->changeLocation(room4);
+
+	Exit* from3to5 = new Exit("Room3to5", "Passage from room 3 to room 5", room3, room5, north, false, NULL);
+	Exit* from5to3 = new Exit("Room5to3", "Passage from room 5 to room 3", room5, room3, south, false, NULL);
+
+	from3to5->changeLocation(room3);
+	from5to3->changeLocation(room5);
+
+	Exit* from1toFinal = new Exit("Room1toFinal", "You can see a dark passage behind the door", room1, finalRoom, north, true, key);
+	Exit* fromFinalto1 = new Exit("FinalRoomto1", "A dark passage back to the entrance", finalRoom, room1, south, false, key);
+
+	from1toFinal->changeLocation(room1);
+	fromFinalto1->changeLocation(finalRoom);
 
 	//Create player
 	newPlayer = new Player("Link", "Our hero for this adventure");
 
-	this->worldElements.push_back(newPlayer);
-
 	newPlayer->changeLocation(room1);
+
+	this->worldElements.push_back(newPlayer);
 
 	this->worldElements.push_back(room1);
 	this->worldElements.push_back(room2);
@@ -111,6 +121,13 @@ void World::createWorld()
 	this->worldElements.push_back(dagga);
 	this->worldElements.push_back(note);
 	this->worldElements.push_back(key);
+	this->worldElements.push_back(box);
+	this->worldElements.push_back(table);
+
+	this->worldElements.push_back(troll);
+	this->worldElements.push_back(dragon);
+
+	this->worldElements.push_back(sphinx);
 }
 
 void World::showRoomsDescriptions() {
@@ -161,7 +178,10 @@ bool World::executeCommand(vector<string>& command) {
 			break;
 		}
 		case 2: {
-			if (compareWorld(command[0], "take")) {
+			if (compareWorld(command[0], "look")) {
+				newPlayer->showDescription(command);
+			}
+			else if (compareWorld(command[0], "take")) {
 				newPlayer->take(command);
 			}
 			else if (compareWorld(command[0], "drop")) {
@@ -169,6 +189,33 @@ bool World::executeCommand(vector<string>& command) {
 			}
 			else {
 				found = false;
+			}
+			break;
+		}
+		case 3: {
+			if (compareWorld(command[0], "talk")) {
+				newPlayer->talkNPC(command);
+			}
+			else {
+				found = false;
+			}
+			break;
+		}
+		case 4: {
+			if (compareWorld(command[0], "open")) {
+				newPlayer->open(command);
+			}
+			else if (compareWorld(command[0], "close")) {
+				newPlayer->close(command);
+			}
+			else if (compareWorld(command[0], "take")) {
+				newPlayer->take(command);
+			}
+			else if (compareWorld(command[0], "drop")) {
+				newPlayer->drop(command);
+			}
+			else if (compareWorld(command[0], "answer")) {
+				newPlayer->answerNPC(command);
 			}
 			break;
 		}

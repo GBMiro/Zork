@@ -3,6 +3,7 @@
 #include "Exit.h"
 #include "Item.h"
 #include "Creature.h"
+#include "NPC.h"
 
 using namespace std;
 
@@ -23,7 +24,7 @@ void Room::showDescription()
 
 	bool first = true;
 
-	//After room description, show all creatures, items and exits in the room
+	//After room description, show all creatures, npc, items and exits in the room
 
 	for (list<Entity*>::iterator iter = entityElements.begin(); iter != entityElements.end(); ++iter) {
 		if ((*iter)->type == creature) {
@@ -31,7 +32,19 @@ void Room::showDescription()
 				cout << "There seems to be some creatures:" << endl;
 				first = false;
 			}
-			((Creature *)*iter)->showDescription();
+			cout << ((Creature *)*iter)->name << endl;
+		}
+	}
+
+	first = true;
+
+	for (list<Entity*>::iterator iter = entityElements.begin(); iter != entityElements.end(); ++iter) {
+		if ((*iter)->type == npc) {
+			if (first) {
+				cout << "You can see someone:" << endl;
+				first = false;
+			}
+			cout << ((NPC *)*iter)->name << endl;
 		}
 	}
 
@@ -40,10 +53,10 @@ void Room::showDescription()
 	for (list<Entity*>::iterator iter = entityElements.begin(); iter != entityElements.end(); ++iter) {	
 		if ((*iter)->type == item) {
 			if (first) {
-				cout << "There seems to be some items:" << endl;
+				cout << "There are some items:" << endl;
 				first = false;
 			}
-			((Item *)*iter)->showDescription();
+			cout << ((Item *)*iter)->name << endl;
 		}
 	}
 
