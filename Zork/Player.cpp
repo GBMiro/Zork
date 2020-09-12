@@ -4,8 +4,8 @@
 #include "NPC.h"
 #include <iostream>
 
-Player::Player(string name, string description)
-	: Creature(name, description)
+Player::Player(string name, string description, int HP, int damage, int defense)
+	: Creature(name, description, HP, damage, defense)
 {
 	type = player;
 }
@@ -102,12 +102,10 @@ void Player::take(const vector<string>& object)
 	}
 }
 
-void Player::drop(const vector<string>& object) //Afegir cas que estiguin l'objecte a l'habitació, o el tingui jo. Ara estic suposont que quan faig drop into i take from ho tinc tot jo
+void Player::drop(const vector<string>& object) 
 {
 	string itemName = object[1];
 	Item* itemFound = (Item*)getEntity(itemName, item);
-
-	//cout << object.size() << endl;
 	
 	//We need to check if we are putting an item in another one or just dropping one
 	if (object.size() == 2) {
@@ -211,6 +209,33 @@ void Player::close(const vector<string>& action)
 	}
 }
 
+void Player::attack(const vector<string>& action)
+{
+	string creatureName = action[1];
+	Creature* creatureFound = (Creature*)getRoom()->getEntity(creatureName, creature);
+
+	if (creatureFound != NULL) {
+		if (creatureFound->isAlive()) {
+			int damageDealt = damage - creatureFound->defense > 0 ? damage - creatureFound->defense : 0;
+			creatureFound->currentHP = creatureFound->currentHP - damageDealt < 0 ? 0 : creatureFound->currentHP - damageDealt;
+			cout << "You attack the creature dealing " << damageDealt << " damage." << endl;
+			if (!creatureFound->isAlive()) {
+				cout << "You killed the creature." << endl;
+			}
+		}
+		else {
+			cout << "The creature is dead." << endl;
+		}
+	}
+	else {
+		cout << "There is no creature named " << creatureName << endl;
+	}
+}
+
+void Player::update()
+{
+}
+
 void Player::talkNPC(const vector<string>& action)
 {
 	string npcName = action[2];
@@ -259,6 +284,33 @@ void Player::showInventory()
 	}
 	else {
 		cout << "You have nothing in your bag" << endl;
+	}
+}
+
+void Player::showStats(const vector<string>& action) const
+{
+	if (action.size() == 1) {
+		cout << "Name: " << name << endl;
+		cout << "Total health points: " << HP << endl;
+		cout << "Current health points: " << currentHP << endl;
+		cout << "Damage: " << damage << endl;
+		cout << "Defense: " << defense << endl;
+		cout << "Status: " << (this->isAlive() ? "Alive" : "Dead") << endl;
+	}
+	else {
+		string name = action[1];
+		Creature* creatureFound = (Creature*) getRoom()->getEntity(name, creature);
+		NPC* npcFound = (NPC*)getRoom()->getEntity(name, npc);
+		
+		if (npcFound == NULL && creatureFound == NULL) {
+			cout << "There is no one called " << name << " here." << endl;
+		}
+		else if (npcFound == NULL) {
+			creatureFound->showStats();
+		}
+		else {
+			npcFound->showStats();
+		}
 	}
 }
 

@@ -32,7 +32,7 @@ int main()
 
 	command.push_back("look");
 
-	while (1) {
+	while (gameOnGoing) {
 
 		if (_kbhit() != 0) {
 
@@ -76,10 +76,11 @@ int main()
 		if (command.size() > 0) {
 			line = "";
 			command.clear();
+			gameOnGoing = myZorkWorld.worldTurn();
 		}
 	}
 
-	cout << "Thank you for playing" << endl;
+	cout << "Thank you for playing." << endl;
 }
 
 

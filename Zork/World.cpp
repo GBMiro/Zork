@@ -45,8 +45,8 @@ void World::createWorld()
 	table->changeLocation(room1);
 
 	//Create Creatures
-	Creature* troll = new Creature("Troll", "A cavern troll");
-	Creature* dragon = new Creature("Dragon", "From another world. It's your last trial. Beat it, and you will be long remembered.");
+	Creature* troll = new Creature("Troll", "A cavern troll", 100, 20, 20);
+	Creature* dragon = new Creature("Dragon", "From another world. It's your last trial. Beat it, and you will be long remembered.", 200, 50, 0);
 
 	troll->changeLocation(room5);
 	dragon->changeLocation(finalRoom);
@@ -59,7 +59,7 @@ void World::createWorld()
 		" What am I?\"\n"
 		"I'll be waiting your answer...";
 
-	NPC* sphinx = new NPC("Sphinx", "A lost sphinx. It likes riddles", dialog, true, "e");
+	NPC* sphinx = new NPC("Sphinx", "A lost sphinx. It likes riddles", 100, 40, 100, dialog, true, "e");
 	sphinx->changeLocation(room2);
 
 	//Create Connections
@@ -94,7 +94,7 @@ void World::createWorld()
 	fromFinalto1->changeLocation(finalRoom);
 
 	//Create player
-	newPlayer = new Player("Link", "Our hero for this adventure");
+	newPlayer = new Player("Link", "Our hero for this adventure", 100, 50, 0);
 
 	newPlayer->changeLocation(room1);
 
@@ -172,6 +172,9 @@ bool World::executeCommand(vector<string>& command) {
 			else if (compareWorld(command[0], "inventory")) {
 				newPlayer->showInventory();
 			}
+			else if (compareWorld(command[0], "stats")) {
+				newPlayer->showStats(command);
+			}
 			else {
 				found = false;
 			}
@@ -186,6 +189,12 @@ bool World::executeCommand(vector<string>& command) {
 			}
 			else if (compareWorld(command[0], "drop")) {
 				newPlayer->drop(command);
+			}
+			else if (compareWorld(command[0], "stats")) {
+				newPlayer->showStats(command);
+			}
+			else if (compareWorld(command[0], "attack")) {
+				newPlayer->attack(command);
 			}
 			else {
 				found = false;
@@ -223,6 +232,14 @@ bool World::executeCommand(vector<string>& command) {
 			found = false;
 	}
 	return found;
+}
+
+bool World::worldTurn()
+{
+	for (vector<Entity*>::iterator it = worldElements.begin(); it != worldElements.end(); ++it) {
+		(*it)->update();
+	}
+	return newPlayer->isAlive();
 }
 
 

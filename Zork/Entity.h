@@ -24,8 +24,10 @@ public:
 	~Entity();
 
 	virtual void showDescription();
+	virtual void update();
 	void changeLocation(Entity* newLocation);
 	Entity* getEntity(string name, EntityType type);
+	Entity* getPlayer() const;
 	void getEntityElements(list<Entity*>& elements);
 	void getEntityElementsByType(list<Entity*>& elements, EntityType type);
 

@@ -4,13 +4,21 @@
 class Creature : public Entity
 {
 public:
-	Creature(string name, string description);
+	Creature(string name, string description, int HP, int damage, int defense);
 	~Creature();
 
 	virtual void showDescription();
+	virtual bool isAlive() const;
+	virtual void attack(const vector<string>& object) const;
+	virtual void showStats() const;
+	virtual void update();
+	void attackPlayer() const;
 	Room* getRoom() const;
 
 public:
-	int hp; //Health points
+	int HP; //Health points
+	int currentHP;
+	int damage;
+	int defense;
 };
 

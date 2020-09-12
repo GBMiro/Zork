@@ -20,6 +20,8 @@ class World
 
 		bool executeCommand(vector<string>& command);
 
+		bool worldTurn();
+
 	private:
 
 		vector<Entity*> worldElements;

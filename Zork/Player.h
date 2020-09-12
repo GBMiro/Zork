@@ -5,7 +5,7 @@
 class Player : public Creature
 {
 public:
-	Player(string name,string description);
+	Player(string name,string description, int HP, int damage, int defense);
 	~Player();
 
 	void showDescription(const vector<string>& obj);
@@ -14,11 +14,15 @@ public:
 	void drop(const vector<string>& object);
 	void open(const vector<string>& action);
 	void close(const vector<string>& action);
+	void attack(const vector<string>& action);
+	void update();
 
 	void talkNPC(const vector<string>& action);
 	void answerNPC(const vector<string>& action);
 
-	void showInventory(); //virtual
+	void showInventory();
+	void showStats(const vector<string>& action) const;
+
 };
 
 
