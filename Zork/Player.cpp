@@ -107,9 +107,17 @@ void Player::drop(const vector<string>& object)
 	string itemName = object[1];
 	Item* itemFound = (Item*)getEntity(itemName, item);
 	
-	//We need to check if we are putting an item in another one or just dropping one
+	//We need to check if we are putting an item in another one or just dropping one.
 	if (object.size() == 2) {
 		if (itemFound != NULL) {
+			if (itemFound == weaponEquipped) {
+				weaponEquipped = NULL;
+			}
+			else {
+				if (itemFound == armorEquipped) {
+					armorEquipped = NULL;
+				}
+			}
 			itemFound->changeLocation(location);
 			cout << "You dropped the " << itemName << endl;
 		}
@@ -216,7 +224,7 @@ void Player::attack(const vector<string>& action)
 
 	if (creatureFound != NULL) {
 		if (creatureFound->isAlive()) {
-			int damageDealt = damage - creatureFound->defense > 0 ? damage - creatureFound->defense : 0;
+			int damageDealt = getTotalDamage() - creatureFound->defense > 0 ? getTotalDamage() - creatureFound->defense : 0;
 			creatureFound->currentHP = creatureFound->currentHP - damageDealt < 0 ? 0 : creatureFound->currentHP - damageDealt;
 			cout << "You attack the creature dealing " << damageDealt << " damage." << endl;
 			if (!creatureFound->isAlive()) {
@@ -229,6 +237,157 @@ void Player::attack(const vector<string>& action)
 	}
 	else {
 		cout << "There is no creature named " << creatureName << endl;
+	}
+}
+
+void Player::equip(const vector<string>& action)
+{
+	string itemName = action[1];
+	Item* itemFound = (Item*) getEntity(itemName, item);
+	
+	if (itemFound != NULL) {
+		switch (itemFound->itemType) {
+			case weapon:
+				weaponEquipped = itemFound;
+				cout << "You equipped " << weaponEquipped->name << endl;
+				break;
+			case armor:
+				armorEquipped = itemFound;
+				cout << "You equipped " << armorEquipped->name << endl;
+				break;
+			default:
+				cout << "You can't equip this" << endl;
+				break;
+		}
+	}
+	else {
+		cout << "To equip an item you must have it in your inventory" << endl;
+	}
+}
+
+void Player::unEquip(const vector<string>& action)
+{
+	string itemName = action[1];
+	Item* itemFound = (Item*)getEntity(itemName, item);
+
+	if (itemFound != NULL) {
+		switch (itemFound->itemType) {
+			case weapon:
+				if (itemFound != weaponEquipped) {
+					cout << itemName << " is not equipped" << endl;
+				}
+				else {
+					weaponEquipped = NULL;
+					cout << "You remove " << itemName << endl;
+				}
+				break;
+			case armor:
+				if (itemFound != armorEquipped) {
+					cout << itemName << " is not equipped" << endl;
+				}
+				else {
+					armorEquipped = NULL;
+					cout << "You remove " << itemName << endl;
+				}
+				break;
+			default:
+				cout << "This can't even be equipped." << endl;
+				break;
+		}
+	}
+	else {
+		cout << "To remove a weapon or armor you must have it in your inventory" << endl;
+	}
+}
+
+void Player::loot(const vector<string>& action)
+{
+	string creatureName = action[1];
+	Creature* creatureFound = (Creature*)getRoom()->getEntity(creatureName, creature);
+
+	if (creatureFound != NULL) {
+		if (!creatureFound->isAlive()) {
+			list<Entity* > creatureItems;
+			creatureFound->getEntityElements(creatureItems);
+			
+			if (creatureItems.size() > 0) {
+				for (list<Entity*>::iterator iter = creatureItems.begin(); iter != creatureItems.end(); ++iter) {
+					Item* itemFound = (Item*) (*iter);
+					itemFound->changeLocation(this);
+					cout << "You took: " << itemFound->name << endl;
+				}
+			}
+			else {
+				cout << "Nothing found..." << endl;
+			}
+		}
+		else {
+			cout << "You can't loot a living creature" << endl;
+		}
+	}
+	else {
+		cout << "There is no one called " << creatureName << endl;
+	}
+}
+
+void Player::drink(const vector<string>& action)
+{
+	string itemName = action[1];
+	Item* itemFound = (Item*)getEntity(itemName, item);
+
+	if (itemFound != NULL) {
+		if (itemFound->itemType == potion) {
+			if (itemFound->value > 0) {
+				if (currentHP != HP) {
+					int healthToRestore = HP - currentHP;
+					int healthRestored = (itemFound->value - healthToRestore >= 0 ? healthToRestore : itemFound->value);
+
+					currentHP += healthRestored;
+					itemFound->value = itemFound->value - healthRestored;
+
+					cout << "The potion restored " << healthRestored << " health points" << endl;
+
+					if (itemFound->value == 0) {
+						cout << "There's nothing left" << endl;
+					}
+					else {
+						cout << "There is some potion left" << endl;
+					}
+				}
+				else {
+					cout << "Your health is full" << endl;
+				}
+			}
+			else {
+				cout << "It's empty." << endl;
+			}
+		}
+		else {
+			cout << "You can't drink this!" << endl;
+		}
+	}
+	else {
+		cout << "You don't have this item" << endl;
+	}
+}
+
+int Player::getTotalDamage() const
+{
+	if (weaponEquipped != NULL) {
+		return weaponEquipped->value + damage;
+	}
+	else {
+		return damage;
+	}
+}
+
+int Player::getTotalDefense() const
+{
+	if (armorEquipped != NULL) {
+		return armorEquipped->value + defense;
+	}
+	else {
+		return defense;
 	}
 }
 
@@ -293,8 +452,8 @@ void Player::showStats(const vector<string>& action) const
 		cout << "Name: " << name << endl;
 		cout << "Total health points: " << HP << endl;
 		cout << "Current health points: " << currentHP << endl;
-		cout << "Damage: " << damage << endl;
-		cout << "Defense: " << defense << endl;
+		cout << "Damage: " << getTotalDamage() << endl;
+		cout << "Defense: " << getTotalDefense() << endl;
 		cout << "Status: " << (this->isAlive() ? "Alive" : "Dead") << endl;
 	}
 	else {
@@ -313,4 +472,3 @@ void Player::showStats(const vector<string>& action) const
 		}
 	}
 }
-

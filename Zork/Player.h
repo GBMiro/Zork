@@ -15,6 +15,14 @@ public:
 	void open(const vector<string>& action);
 	void close(const vector<string>& action);
 	void attack(const vector<string>& action);
+	void equip(const vector<string>& action);
+	void unEquip(const vector<string>& action);
+	void loot(const vector<string>& action);
+	void drink(const vector<string>& action);
+
+	int getTotalDamage() const;
+	int getTotalDefense() const;
+
 	void update();
 
 	void talkNPC(const vector<string>& action);
@@ -22,6 +30,10 @@ public:
 
 	void showInventory();
 	void showStats(const vector<string>& action) const;
+
+public:
+	Item* weaponEquipped;
+	Item* armorEquipped;
 
 };
 

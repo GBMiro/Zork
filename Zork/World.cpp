@@ -32,23 +32,28 @@ void World::createWorld()
 	Room* finalRoom = new Room("Final Room", "This is the final room. Accessible from room 1");
 
 	//Create Items
-	Item* dagga = new Item("Dagga", "A small dagga. Sometimes less is more", false, true);
-	Item* key = new Item("Key", "Old key. Maybe it will take you to your doom", false, true);
-	Item* note = new Item("Note", "It says \"I can no longer fight that beast...\"", false, true);
-	Item* box = new Item("Box", "To store some items", true, true);
-	Item* table = new Item("Table", "An old table. It would be perfect to start a bonfire...", false, false);
+	Item* dagga = new Item("Dagga", "A small dagga. Sometimes less is more", false, true, true, weapon, 10);
+	Item* key = new Item("Key", "Old key. Maybe it will take you to your doom", false, true, false, other, 0);
+	Item* note = new Item("Note", "It says \"I can no longer fight that beast...\"", false, true, false, other, 0);
+	Item* box = new Item("Box", "To store some items", true, true, false, other, 0);
+	Item* table = new Item("Table", "An old table. It would be perfect to start a bonfire...", false, false, false, other, 0);
+	Item* sword = new Item("Sword", "A long sword. You can feel a great power stored in it", false, true, true, weapon, 50);
+	Item* healthPotion = new Item("Potion", "Contains an invisible liquid. No one knows what happens after drinking it...", false, true, false, potion, 100);
 
 	dagga->changeLocation(room4);
 	key->changeLocation(room5);
 	note->changeLocation(box);
 	box->changeLocation(room1);
 	table->changeLocation(room1);
+	healthPotion->changeLocation(room3);
 
 	//Create Creatures
 	Creature* troll = new Creature("Troll", "A cavern troll", 100, 20, 20);
 	Creature* dragon = new Creature("Dragon", "From another world. It's your last trial. Beat it, and you will be long remembered.", 200, 50, 0);
 
 	troll->changeLocation(room5);
+	sword->changeLocation(troll);
+
 	dragon->changeLocation(finalRoom);
 
 	//Create NPC
@@ -94,7 +99,7 @@ void World::createWorld()
 	fromFinalto1->changeLocation(finalRoom);
 
 	//Create player
-	newPlayer = new Player("Link", "Our hero for this adventure", 100, 50, 0);
+	newPlayer = new Player("Link", "Our hero for this adventure", 100, 40, 0);
 
 	newPlayer->changeLocation(room1);
 
@@ -123,6 +128,8 @@ void World::createWorld()
 	this->worldElements.push_back(key);
 	this->worldElements.push_back(box);
 	this->worldElements.push_back(table);
+	this->worldElements.push_back(sword);
+	this->worldElements.push_back(healthPotion);
 
 	this->worldElements.push_back(troll);
 	this->worldElements.push_back(dragon);
@@ -195,6 +202,18 @@ bool World::executeCommand(vector<string>& command) {
 			}
 			else if (compareWorld(command[0], "attack")) {
 				newPlayer->attack(command);
+			}
+			else if (compareWorld(command[0], "equip")) {
+				newPlayer->equip(command);
+			}
+			else if (compareWorld(command[0], "unequip")) {
+				newPlayer->unEquip(command);
+			}
+			else if (compareWorld(command[0], "loot")) {
+				newPlayer->loot(command);
+			}
+			else if (compareWorld(command[0], "drink")) {
+				newPlayer->drink(command);
 			}
 			else {
 				found = false;

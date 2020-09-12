@@ -18,7 +18,7 @@ public:
 public:
 	int HP; //Health points
 	int currentHP;
-	int damage;
-	int defense;
+	int damage; //base damage
+	int defense; //base defense
 };
 
