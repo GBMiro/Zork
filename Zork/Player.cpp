@@ -462,7 +462,7 @@ void Player::showStats(const vector<string>& action) const
 		NPC* npcFound = (NPC*)getRoom()->getEntity(name, npc);
 		
 		if (npcFound == NULL && creatureFound == NULL) {
-			cout << "There is no one called " << name << " here." << endl;
+			cout << "There is no creature called " << name << " here." << endl;
 		}
 		else if (npcFound == NULL) {
 			creatureFound->showStats();
@@ -471,4 +471,32 @@ void Player::showStats(const vector<string>& action) const
 			npcFound->showStats();
 		}
 	}
+}
+
+void Player::showHelp() const
+{
+	cout << "Available commands for the player:" << endl;
+	cout << "look -> Show room information" << endl;
+	cout << "look X -> Show information of X" << endl;
+	cout << "take X -> Take an item from the room into your inventory" << endl;
+	cout << "take X from Y -> Take item X from inside item Y" << endl;
+	cout << "drop X -> Drop on the floor the item X from your inventory" << endl;
+	cout << "drop X into Y -> Put item X inside item Y. Not all items can have another one inside" << endl;
+	cout << "drink X -> Drink item X" << endl;
+	cout << "north -> Go north if possible" << endl;
+	cout << "south -> Go south if possible" << endl;
+	cout << "east -> Go east if possible" << endl;
+	cout << "west -> Go west if possible" << endl;
+	cout << "talk to X -> Talk to NPC X" << endl;
+	cout << "answer X with Y -> Answer NPC X with Y" << endl;
+	cout << "open X with Y -> Open door blocking direction X (north, south, east, west) with Y" << endl;
+	cout << "close X with Y -> Close door of X (north, south, east, west) with Y " << endl;
+	cout << "equip X -> Equip item X " << endl;
+	cout << "unequip X -> Unequip item X" << endl;
+	cout << "attack X -> Attack creature X" << endl;
+	cout << "loot X -> Loot creature X to get its items" << endl;
+	cout << "inventory -> Show your inventory" << endl;
+	cout << "stats -> Show your stats" << endl;
+	cout << "stats X -> Show stats of X" << endl;
+	cout << "help -> Show available commands" << endl;
 }

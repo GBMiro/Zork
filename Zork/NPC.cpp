@@ -48,7 +48,7 @@ void NPC::attackPlayer() const
 	Player* playerFound = (Player*) getRoom()->getPlayer();
 
 	if (playerFound != NULL) {
-		int damageDealt = damage - playerFound->defense > 0 ? damage - playerFound->defense : 0;
+		int damageDealt = damage - playerFound->defense > 0 ? damage - playerFound->defense : 0; // NPC ignores armor on player. It is intended
 		playerFound->currentHP = playerFound->currentHP - damageDealt < 0 ? 0 : playerFound->currentHP - damageDealt;
 		cout << name << " is draining your life force. You lost " << damageDealt << " health points." << endl;
 		if (!playerFound->isAlive()) {

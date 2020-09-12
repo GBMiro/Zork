@@ -50,7 +50,7 @@ void Creature::attackPlayer() const
 {
 		Player* playerFound = (Player*)getRoom()->getPlayer();
 		if (playerFound != NULL) {
-			int damageDealt = damage - playerFound->defense > 0 ? damage - playerFound->defense : 0;
+			int damageDealt = damage - playerFound->getTotalDefense() > 0 ? damage - playerFound->getTotalDefense() : 0;
 			playerFound->currentHP = playerFound->currentHP - damageDealt < 0 ? 0 : playerFound->currentHP - damageDealt;
 			cout << this->name << " attack you! You lost " << damageDealt << " health points." << endl;
 			if (!playerFound->isAlive()) {

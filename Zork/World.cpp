@@ -24,37 +24,46 @@ bool compareWorld(const string& first, const string& second) {
 void World::createWorld()
 {
 	//Create Rooms
-	Room* room1 = new Room("Room 1", "This is the first room of the game");
-	Room* room2 = new Room("Room 2", "Bottom left room");
-	Room* room3 = new Room("Room 3", "Bottom right room");
-	Room* room4 = new Room("Room 4", "Upper left room");
-	Room* room5 = new Room("Room 5", "Upper right room");
-	Room* finalRoom = new Room("Final Room", "This is the final room. Accessible from room 1");
+	Room* entrance = new Room("Entrance", "This is the castle's entrance. You can see countless cracks in the wall.\nThe whole building could collapse any minute. Better hurry up!");
+	Room* sphinxRoom = new Room("Sphinx's Room", "You are surrounded by a mysterious fog altough you can see almost everything.\nSomething is whispering arround you...");
+	Room* armory = new Room("Armory", "From the look of it, it seems it has not been used in ages.\nYou would be lucky to find something useful here.");
+	Room* library = new Room("Library", "This room is only accessible after solving the sphinx's riddle.\nIt is said that for each one that tried and failed, there is a book. You counted 66.");
+	Room* trollCavern = new Room("Troll's Cavern", "The smell of this cavern stinks so badly that you almost faint.\nIf you wanna succeed, you gotta take down the troll... if not already dead by its stinky smell.");
+	Room* courtyard = new Room("Courtyard", "You arrived at the courtyard.\nHere should be the dragon others looked for in the past and the one you are trying to slay.\nYour surroundings are burnt and you can see broken bones all over the place.");
 
 	//Create Items
-	Item* dagga = new Item("Dagga", "A small dagga. Sometimes less is more", false, true, true, weapon, 10);
-	Item* key = new Item("Key", "Old key. Maybe it will take you to your doom", false, true, false, other, 0);
-	Item* note = new Item("Note", "It says \"I can no longer fight that beast...\"", false, true, false, other, 0);
+	Item* dagga = new Item("Dagga", "Small dagga. It will improve your damage if equipped", false, true, true, weapon, 10);
+	Item* key = new Item("Key", "Courtyard key. Gift given by the sphinx for those who solve the riddle", false, true, false, other, 0);
+	Item* note = new Item("Note", "This was written by the sphinx... \"You have the key, Why don't confont the dragon right now?\"", false, true, false, other, 0);
 	Item* box = new Item("Box", "To store some items", true, true, false, other, 0);
-	Item* table = new Item("Table", "An old table. It would be perfect to start a bonfire...", false, false, false, other, 0);
+	Item* table = new Item("Table", "An old table. It would be perfect to start a bonfire", false, false, false, other, 0);
 	Item* sword = new Item("Sword", "A long sword. You can feel a great power stored in it", false, true, true, weapon, 50);
-	Item* healthPotion = new Item("Potion", "Contains an invisible liquid. No one knows what happens after drinking it...", false, true, false, potion, 100);
+	Item* shield = new Item("Shield", "A old shield. You get the feeling it will save your life", false, true, true, armor, 20);
+	Item* healthPotion = new Item("Potion", "Contains an invisible liquid. No one knows what happens after drinking it", false, true, false, potion, 100);
+	Item* oldKey = new Item("Old-Key", "You found this key on the entrance. It must unlock doors nearby", false, true, false, other, 0);
+	Item* certificate = new Item("Certificate", "This is a certificate saying you have beaten my zork! I hope you had fine playing it. Type quit to close the game", false, true, false, other, 0);
 
-	dagga->changeLocation(room4);
-	key->changeLocation(room5);
+	dagga->changeLocation(library);
+	key->changeLocation(box);
 	note->changeLocation(box);
-	box->changeLocation(room1);
-	table->changeLocation(room1);
-	healthPotion->changeLocation(room3);
+	box->changeLocation(library);
+	table->changeLocation(entrance);
+	healthPotion->changeLocation(armory);
 
 	//Create Creatures
 	Creature* troll = new Creature("Troll", "A cavern troll", 100, 20, 20);
-	Creature* dragon = new Creature("Dragon", "From another world. It's your last trial. Beat it, and you will be long remembered.", 200, 50, 0);
+	Creature* dragon = new Creature("Dragon", "An unarmored dragon but with lethal hits. Be prepared.", 200, 50, 0);
+	Creature* rat = new Creature("Rat", "You can hear something metalic from it.", 10, 10, 0);
 
-	troll->changeLocation(room5);
+	troll->changeLocation(trollCavern);
 	sword->changeLocation(troll);
+	shield->changeLocation(troll);
 
-	dragon->changeLocation(finalRoom);
+	rat->changeLocation(entrance);
+	oldKey->changeLocation(rat);
+
+	dragon->changeLocation(courtyard);
+	certificate->changeLocation(dragon);
 
 	//Create NPC
 	string dialog = 
@@ -64,64 +73,64 @@ void World::createWorld()
 		" What am I?\"\n"
 		"I'll be waiting your answer...";
 
-	NPC* sphinx = new NPC("Sphinx", "A lost sphinx. It likes riddles", 100, 40, 100, dialog, true, "e");
-	sphinx->changeLocation(room2);
+	NPC* sphinx = new NPC("Sphinx", "A lost sphinx. It likes riddles. You should talk to it. Maybe it will help you or kill you. But you really have no choice", 100, 40, 100, dialog, true, "e");
+	sphinx->changeLocation(sphinxRoom);
 
 	//Create Connections
-	Exit* from1to2 = new Exit("Room1to2", "Passage from room 1 to room 2", room1, room2, west, false, NULL);
-	Exit* from2to1 = new Exit("Room2to1", "Passage from room 2 to room 1", room2, room1, east, false, NULL);
+	Exit* entranceToSphinx = new Exit("EntranceToSphinx", "There is a heavy fog behind the door. You hear something but can't figure out what it is...", entrance, sphinxRoom, west, true, oldKey);
+	Exit* sphinxToEntrance = new Exit("SphinxToEntrance", "A passage through the fog leading to the entrance", sphinxRoom, entrance, east, false, oldKey);
 
-	from1to2->changeLocation(room1);
-	from2to1->changeLocation(room2);
+	entranceToSphinx->changeLocation(entrance);
+	sphinxToEntrance->changeLocation(sphinxRoom);
 
-	Exit* from1to3 = new Exit("Room1to3", "Passage from room 1 to room 3", room1, room3, east, false, NULL);
-	Exit* from3to1 = new Exit("Room3to1", "A Passage from room 3 to room 1", room3, room1, west, false, NULL);
+	Exit* entranceToArmory = new Exit("EntranceToArmory", "You see spikes, swords, helmets, shields... This door must lead to the armory", entrance, armory, east, true, oldKey);
+	Exit* armoryToEntrance = new Exit("ArmoryToEntrance", "This hallway goes back to the entrance", armory, entrance, west, false, oldKey);
 
-	from1to3->changeLocation(room1);
-	from3to1->changeLocation(room3);
+	entranceToArmory->changeLocation(entrance);
+	armoryToEntrance->changeLocation(armory);
 
-	Exit* from2to4 = new Exit("Room2to4", "Passage from room 2 to room 4", room2, room4, north, true, NULL);
-	Exit* from4to2 = new Exit("Room4to2", "Passage from room 4 to room 2", room4, room2, south, false, NULL);
+	Exit* sphinxToLibrary = new Exit("SphinxToLibrary", "You get a strange feeling comming from here...", sphinxRoom, library, north, true, NULL);
+	Exit* libraryToSphinx = new Exit("LibraryToSphinx", "The whisperings come from the Sphinx's room although you are not sure if the Sphinx is the source...", library, sphinxRoom, south, false, NULL);
 
-	from2to4->changeLocation(room2);
-	from4to2->changeLocation(room4);
+	sphinxToLibrary->changeLocation(sphinxRoom);
+	libraryToSphinx->changeLocation(library);
 
-	Exit* from3to5 = new Exit("Room3to5", "Passage from room 3 to room 5", room3, room5, north, false, NULL);
-	Exit* from5to3 = new Exit("Room5to3", "Passage from room 5 to room 3", room5, room3, south, false, NULL);
+	Exit* armoryToCavern = new Exit("ArmoryToCavern", "This is the only way not leading to the entrance. It goes deep and deep...", armory, trollCavern, north, false, NULL);
+	Exit* cavernToArmory = new Exit("CavernToArmory", "Leads back to the armory", trollCavern, armory, south, false, NULL);
 
-	from3to5->changeLocation(room3);
-	from5to3->changeLocation(room5);
+	armoryToCavern->changeLocation(armory);
+	cavernToArmory->changeLocation(trollCavern);
 
-	Exit* from1toFinal = new Exit("Room1toFinal", "You can see a dark passage behind the door", room1, finalRoom, north, true, key);
-	Exit* fromFinalto1 = new Exit("FinalRoomto1", "A dark passage back to the entrance", finalRoom, room1, south, false, key);
+	Exit* entranceToCourtyard = new Exit("EntranceToCourtyard", "You see the courtyard and the dragon. Prepare yourself before entering.", entrance, courtyard, north, true, key);
+	Exit* courtyardToEntrance = new Exit("CourtyardToEntrance", "Back to the entrance.", courtyard, entrance, south, false, key);
 
-	from1toFinal->changeLocation(room1);
-	fromFinalto1->changeLocation(finalRoom);
+	entranceToCourtyard->changeLocation(entrance);
+	courtyardToEntrance->changeLocation(courtyard);
 
 	//Create player
 	newPlayer = new Player("Link", "Our hero for this adventure", 100, 40, 0);
 
-	newPlayer->changeLocation(room1);
+	newPlayer->changeLocation(entrance);
 
 	this->worldElements.push_back(newPlayer);
 
-	this->worldElements.push_back(room1);
-	this->worldElements.push_back(room2);
-	this->worldElements.push_back(room3);
-	this->worldElements.push_back(room4);
-	this->worldElements.push_back(room5);
-	this->worldElements.push_back(finalRoom);
+	this->worldElements.push_back(entrance);
+	this->worldElements.push_back(sphinxRoom);
+	this->worldElements.push_back(armory);
+	this->worldElements.push_back(library);
+	this->worldElements.push_back(trollCavern);
+	this->worldElements.push_back(courtyard);
 
-	this->worldElements.push_back(from1to2);
-	this->worldElements.push_back(from2to1);
-	this->worldElements.push_back(from1to3);
-	this->worldElements.push_back(from3to1);
-	this->worldElements.push_back(from2to4);
-	this->worldElements.push_back(from4to2);
-	this->worldElements.push_back(from3to5);
-	this->worldElements.push_back(from5to3);
-	this->worldElements.push_back(from1toFinal);
-	this->worldElements.push_back(fromFinalto1);
+	this->worldElements.push_back(entranceToSphinx);
+	this->worldElements.push_back(sphinxToEntrance);
+	this->worldElements.push_back(entranceToArmory);
+	this->worldElements.push_back(armoryToEntrance);
+	this->worldElements.push_back(sphinxToLibrary);
+	this->worldElements.push_back(libraryToSphinx);
+	this->worldElements.push_back(armoryToCavern);
+	this->worldElements.push_back(cavernToArmory);
+	this->worldElements.push_back(entranceToCourtyard);
+	this->worldElements.push_back(courtyardToEntrance);
 
 	this->worldElements.push_back(dagga);
 	this->worldElements.push_back(note);
@@ -130,31 +139,16 @@ void World::createWorld()
 	this->worldElements.push_back(table);
 	this->worldElements.push_back(sword);
 	this->worldElements.push_back(healthPotion);
+	this->worldElements.push_back(shield);
+	this->worldElements.push_back(certificate);
 
 	this->worldElements.push_back(troll);
 	this->worldElements.push_back(dragon);
+	this->worldElements.push_back(rat);
 
 	this->worldElements.push_back(sphinx);
 }
 
-void World::showRoomsDescriptions() {
-	for (vector<Entity*>::iterator iter = worldElements.begin(); iter != worldElements.end(); ++iter) {
-		if ((*iter)->type == room) {
-			((Room *)*iter)->showDescription();
-		}
-	}
-}
-
-void World::showWorldElements() {
-	for (vector<Entity*>::iterator iter = worldElements.begin(); iter != worldElements.end(); ++iter) {
-		if ((*iter)->type == room) {
-			((Room *)*iter)->showDescription();
-		}
-		else if ((*iter)->type == wayOut) {
-			((Exit *)*iter)->showDescription();
-		}
-	}
-}
 
 bool World::executeCommand(vector<string>& command) {
 	bool found = true;
@@ -181,6 +175,9 @@ bool World::executeCommand(vector<string>& command) {
 			}
 			else if (compareWorld(command[0], "stats")) {
 				newPlayer->showStats(command);
+			}
+			else if (compareWorld(command[0], "help")) {
+				newPlayer->showHelp();
 			}
 			else {
 				found = false;

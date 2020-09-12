@@ -31,6 +31,8 @@ public:
 	void showInventory();
 	void showStats(const vector<string>& action) const;
 
+	void showHelp() const;
+
 public:
 	Item* weaponEquipped;
 	Item* armorEquipped;
