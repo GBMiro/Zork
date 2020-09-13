@@ -283,17 +283,17 @@ void Player::equip(const vector<string>& action)
 
 		if (itemFound != NULL) {
 			switch (itemFound->itemType) {
-			case weapon:
-				weaponEquipped = itemFound;
-				cout << "You equipped " << weaponEquipped->name << endl;
-				break;
-			case armor:
-				armorEquipped = itemFound;
-				cout << "You equipped " << armorEquipped->name << endl;
-				break;
-			default:
-				cout << "You can't equip this" << endl;
-				break;
+				case weapon:
+					weaponEquipped = itemFound;
+					cout << "You equipped " << weaponEquipped->name << endl;
+					break;
+				case armor:
+					armorEquipped = itemFound;
+					cout << "You equipped " << armorEquipped->name << endl;
+					break;
+				default:
+					cout << "You can't equip this" << endl;
+					break;
 			}
 		}
 		else {
@@ -313,27 +313,27 @@ void Player::unEquip(const vector<string>& action)
 
 		if (itemFound != NULL) {
 			switch (itemFound->itemType) {
-			case weapon:
-				if (itemFound != weaponEquipped) {
-					cout << itemName << " is not equipped" << endl;
-				}
-				else {
-					weaponEquipped = NULL;
-					cout << "You remove " << itemName << endl;
-				}
-				break;
-			case armor:
-				if (itemFound != armorEquipped) {
-					cout << itemName << " is not equipped" << endl;
-				}
-				else {
-					armorEquipped = NULL;
-					cout << "You remove " << itemName << endl;
-				}
-				break;
-			default:
-				cout << "This can't even be equipped." << endl;
-				break;
+				case weapon:
+					if (itemFound != weaponEquipped) {
+						cout << itemName << " is not equipped" << endl;
+					}
+					else {
+						weaponEquipped = NULL;
+						cout << "You remove " << itemName << endl;
+					}
+					break;
+				case armor:
+					if (itemFound != armorEquipped) {
+						cout << itemName << " is not equipped" << endl;
+					}
+					else {
+						armorEquipped = NULL;
+						cout << "You remove " << itemName << endl;
+					}
+					break;
+				default:
+					cout << "This can't even be equipped." << endl;
+					break;
 			}
 		}
 		else {
