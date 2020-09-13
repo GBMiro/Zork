@@ -7,7 +7,7 @@
 
 using namespace std;
 
-Room::Room(string name, string description)
+Room::Room(const string& name, const string& description)
 	: Entity(name, description)
 {
 	this->type = room;
@@ -17,7 +17,7 @@ Room::~Room()
 {
 }
 
-void Room::showDescription()
+void Room::showDescription() const
 {
 	cout << "---   " << name << "   ---" << endl;
 	cout << description << endl;
@@ -26,46 +26,46 @@ void Room::showDescription()
 
 	//After room description, show all creatures, npc, items and exits in the room
 
-	for (list<Entity*>::iterator iter = entityElements.begin(); iter != entityElements.end(); ++iter) {
+	for (list<Entity*>::const_iterator iter = entityElements.begin(); iter != entityElements.end(); ++iter) {
 		if ((*iter)->type == creature) {
 			if (first) {
 				cout << "There seems to be some creatures:" << endl;
 				first = false;
 			}
-			cout << ((Creature *)*iter)->name << endl;
+			cout << "-" << ((Creature *)*iter)->name << endl;
 		}
 	}
 
 	first = true;
 
-	for (list<Entity*>::iterator iter = entityElements.begin(); iter != entityElements.end(); ++iter) {
+	for (list<Entity*>::const_iterator iter = entityElements.begin(); iter != entityElements.end(); ++iter) {
 		if ((*iter)->type == npc) {
 			if (first) {
 				cout << "You can see someone:" << endl;
 				first = false;
 			}
-			cout << ((NPC *)*iter)->name << endl;
+			cout << "-" << ((NPC *)*iter)->name << endl;
 		}
 	}
 
 	first = true;
 
-	for (list<Entity*>::iterator iter = entityElements.begin(); iter != entityElements.end(); ++iter) {	
+	for (list<Entity*>::const_iterator iter = entityElements.begin(); iter != entityElements.end(); ++iter) {	
 		if ((*iter)->type == item) {
 			if (first) {
-				cout << "There are some items:" << endl;
+				cout << "You see items:" << endl;
 				first = false;
 			}
-			cout << ((Item *)*iter)->name << endl;
+			cout << "-" << ((Item *)*iter)->name << endl;
 		}
 	}
 
 	first = true;
 
-	for (list<Entity*>::iterator iter = entityElements.begin(); iter != entityElements.end(); ++iter) {
+	for (list<Entity*>::const_iterator iter = entityElements.begin(); iter != entityElements.end(); ++iter) {
 		if ((*iter)->type == wayOut) {
 			if (first) {
-				cout << "There seems to be some exits:" << endl;
+				cout << "You see exits:" << endl;
 				first = false;
 			}
 			((Exit *) *iter)->showDescription();

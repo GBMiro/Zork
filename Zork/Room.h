@@ -5,10 +5,10 @@
 class Room : public Entity
 {
 public:
-	Room(string name, string description);
+	Room(const string& name, const string& description);
 	~Room();
 
-	void showDescription();
+	void showDescription() const;
 
 	Exit* getExit(const string& dir) const;
 };

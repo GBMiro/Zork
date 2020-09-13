@@ -1,8 +1,9 @@
 #include "NPC.h"
 #include "Player.h"
 #include "Room.h"
+#include "utils.h"
 
-NPC::NPC(string name, string description, int HP, int damage, int defense, string dialog, bool interactive, string answer)
+NPC::NPC(const string& name, const string& description, int HP, int damage, int defense, const string& dialog, bool interactive, const string& answer)
 	: Creature (name, description, HP, damage, defense)
 {
 	type = npc;
@@ -14,20 +15,15 @@ NPC::NPC(string name, string description, int HP, int damage, int defense, strin
 NPC::~NPC()
 {
 }
-/*
-void NPC::showDescription()
-{
-	cout << name << ": " << description << endl;
-}*/
 
-void NPC::talkToPlayer()
+void NPC::talkToPlayer() const
 {
 	cout << dialog << endl;
 }
 
 void NPC::checkAnswer(string answer)
 {
-	if (_stricmp(riddleAnswer.c_str(), answer.c_str()) == 0) {
+	if (compare(riddleAnswer, answer)) {
 		list<Entity*> exits;
 		getRoom()->getEntityElementsByType(exits, wayOut);
 		for (list<Entity*>::iterator it = exits.begin(); it != exits.end(); ++it) {

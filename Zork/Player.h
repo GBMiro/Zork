@@ -5,15 +5,15 @@
 class Player : public Creature
 {
 public:
-	Player(string name,string description, int HP, int damage, int defense);
+	Player(const string& name, const string& description, int HP, int damage, int defense);
 	~Player();
 
-	void showDescription(const vector<string>& obj);
-	void go(const vector<string>& dir);
-	void take(const vector<string>& object);
-	void drop(const vector<string>& object);
-	void open(const vector<string>& action);
-	void close(const vector<string>& action);
+	void showDescription(const vector<string>& action) const;
+	void go(const vector<string>& action);
+	void take(const vector<string>& action);
+	void drop(const vector<string>& action);
+	void unLock(const vector<string>& action);
+	void lock(const vector<string>& action);
 	void attack(const vector<string>& action);
 	void equip(const vector<string>& action);
 	void unEquip(const vector<string>& action);
@@ -25,10 +25,10 @@ public:
 
 	void update();
 
-	void talkNPC(const vector<string>& action);
+	void talkNPC(const vector<string>& action) const;
 	void answerNPC(const vector<string>& action);
 
-	void showInventory();
+	void showInventory() const;
 	void showStats(const vector<string>& action) const;
 
 	void showHelp() const;
@@ -36,6 +36,7 @@ public:
 public:
 	Item* weaponEquipped;
 	Item* armorEquipped;
+	bool victory;
 
 };
 

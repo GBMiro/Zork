@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "Item.h"
 #include "NPC.h"
+#include "utils.h"
 
 World::World()
 {
@@ -17,16 +18,12 @@ World::~World()
 {
 }
 
-bool compareWorld(const string& first, const string& second) {
-	return _stricmp(first.c_str(), second.c_str()) == 0;
-}
-
 void World::createWorld()
 {
 	//Create Rooms
 	Room* entrance = new Room("Entrance", "This is the castle's entrance. You can see countless cracks in the wall.\nThe whole building could collapse any minute. Better hurry up!");
 	Room* sphinxRoom = new Room("Sphinx's Room", "You are surrounded by a mysterious fog altough you can see almost everything.\nSomething is whispering arround you...");
-	Room* armory = new Room("Armory", "From the look of it, it seems it has not been used in ages.\nYou would be lucky to find something useful here.");
+	Room* armory = new Room("Armory", "From the look of it, it seems it has not been used in ages.\nYou would be lucky to find something useful in here.");
 	Room* library = new Room("Library", "This room is only accessible after solving the sphinx's riddle.\nIt is said that for each one that tried and failed, there is a book. You counted 66.");
 	Room* trollCavern = new Room("Troll's Cavern", "The smell of this cavern stinks so badly that you almost faint.\nIf you wanna succeed, you gotta take down the troll... if not already dead by its stinky smell.");
 	Room* courtyard = new Room("Courtyard", "You arrived at the courtyard.\nHere should be the dragon others looked for in the past and the one you are trying to slay.\nYour surroundings are burnt and you can see broken bones all over the place.");
@@ -34,14 +31,15 @@ void World::createWorld()
 	//Create Items
 	Item* dagga = new Item("Dagga", "Small dagga. It will improve your damage if equipped", false, true, true, weapon, 10);
 	Item* key = new Item("Key", "Courtyard key. Gift given by the sphinx for those who solve the riddle", false, true, false, other, 0);
-	Item* note = new Item("Note", "This was written by the sphinx... \"You have the key, Why don't confont the dragon right now?\"", false, true, false, other, 0);
+	Item* note = new Item("Note", "This was written by the sphinx... \"You have the key, Why don't confront the dragon right now?\"", false, true, false, other, 0);
 	Item* box = new Item("Box", "To store some items", true, true, false, other, 0);
 	Item* table = new Item("Table", "An old table. It would be perfect to start a bonfire", false, false, false, other, 0);
 	Item* sword = new Item("Sword", "A long sword. You can feel a great power stored in it", false, true, true, weapon, 50);
-	Item* shield = new Item("Shield", "A old shield. You get the feeling it will save your life", false, true, true, armor, 20);
+	Item* shield = new Item("Shield", "An old shield. You get the feeling it will save your life", false, true, true, armor, 20);
 	Item* healthPotion = new Item("Potion", "Contains an invisible liquid. No one knows what happens after drinking it", false, true, false, potion, 100);
-	Item* oldKey = new Item("Old-Key", "You found this key on the entrance. It must unlock doors nearby", false, true, false, other, 0);
-	Item* certificate = new Item("Certificate", "This is a certificate saying you have beaten my zork! I hope you had fine playing it. Type quit to close the game", false, true, false, other, 0);
+	Item* oldKey = new Item("Old-Key", "You found this key at the entrance. It must unlock doors nearby", false, true, false, other, 0);
+	Item* certificate = new Item("Certificate", "This is a certificate saying you have beaten my zork! I hope you had fun playing it. Type quit to close the game", false, true, false, other, 0);
+	Item* bottle = new Item("Bottle", "A bottle", false, true, false, potion, 0);
 
 	dagga->changeLocation(library);
 	key->changeLocation(box);
@@ -49,6 +47,7 @@ void World::createWorld()
 	box->changeLocation(library);
 	table->changeLocation(entrance);
 	healthPotion->changeLocation(armory);
+	bottle->changeLocation(entrance);
 
 	//Create Creatures
 	Creature* troll = new Creature("Troll", "A cavern troll", 100, 20, 20);
@@ -108,11 +107,11 @@ void World::createWorld()
 	courtyardToEntrance->changeLocation(courtyard);
 
 	//Create player
-	newPlayer = new Player("Link", "Our hero for this adventure", 100, 40, 0);
+	player = new Player("Link", "Our hero for this adventure", 100, 40, 0);
 
-	newPlayer->changeLocation(entrance);
+	player->changeLocation(entrance);
 
-	this->worldElements.push_back(newPlayer);
+	this->worldElements.push_back(player);
 
 	this->worldElements.push_back(entrance);
 	this->worldElements.push_back(sphinxRoom);
@@ -141,6 +140,8 @@ void World::createWorld()
 	this->worldElements.push_back(healthPotion);
 	this->worldElements.push_back(shield);
 	this->worldElements.push_back(certificate);
+	this->worldElements.push_back(oldKey);
+	this->worldElements.push_back(bottle);
 
 	this->worldElements.push_back(troll);
 	this->worldElements.push_back(dragon);
@@ -155,29 +156,29 @@ bool World::executeCommand(vector<string>& command) {
 
 	switch (command.size()) {
 		case 1: {
-			if (compareWorld(command[0], "look")) {
-				newPlayer->showDescription(command);
+			if (compare(command[0], "look")) {
+				player->showDescription(command);
 			}
-			else if (compareWorld(command[0], "north")) {
-				newPlayer->go(command);
+			else if (compare(command[0], "north")) {
+				player->go(command);
 			}
-			else if (compareWorld(command[0], "south")) {
-				newPlayer->go(command);
+			else if (compare(command[0], "south")) {
+				player->go(command);
 			}
-			else if (compareWorld(command[0], "east")) {
-				newPlayer->go(command);
+			else if (compare(command[0], "east")) {
+				player->go(command);
 			}
-			else if (compareWorld(command[0], "west")) {
-				newPlayer->go(command);
+			else if (compare(command[0], "west")) {
+				player->go(command);
 			}
-			else if (compareWorld(command[0], "inventory")) {
-				newPlayer->showInventory();
+			else if (compare(command[0], "inventory")) {
+				player->showInventory();
 			}
-			else if (compareWorld(command[0], "stats")) {
-				newPlayer->showStats(command);
+			else if (compare(command[0], "stats")) {
+				player->showStats(command);
 			}
-			else if (compareWorld(command[0], "help")) {
-				newPlayer->showHelp();
+			else if (compare(command[0], "help")) {
+				player->showHelp();
 			}
 			else {
 				found = false;
@@ -185,32 +186,32 @@ bool World::executeCommand(vector<string>& command) {
 			break;
 		}
 		case 2: {
-			if (compareWorld(command[0], "look")) {
-				newPlayer->showDescription(command);
+			if (compare(command[0], "look")) {
+				player->showDescription(command);
 			}
-			else if (compareWorld(command[0], "take")) {
-				newPlayer->take(command);
+			else if (compare(command[0], "take")) {
+				player->take(command);
 			}
-			else if (compareWorld(command[0], "drop")) {
-				newPlayer->drop(command);
+			else if (compare(command[0], "drop")) {
+				player->drop(command);
 			}
-			else if (compareWorld(command[0], "stats")) {
-				newPlayer->showStats(command);
+			else if (compare(command[0], "stats")) {
+				player->showStats(command);
 			}
-			else if (compareWorld(command[0], "attack")) {
-				newPlayer->attack(command);
+			else if (compare(command[0], "attack")) {
+				player->attack(command);
 			}
-			else if (compareWorld(command[0], "equip")) {
-				newPlayer->equip(command);
+			else if (compare(command[0], "equip")) {
+				player->equip(command);
 			}
-			else if (compareWorld(command[0], "unequip")) {
-				newPlayer->unEquip(command);
+			else if (compare(command[0], "unequip")) {
+				player->unEquip(command);
 			}
-			else if (compareWorld(command[0], "loot")) {
-				newPlayer->loot(command);
+			else if (compare(command[0], "loot")) {
+				player->loot(command);
 			}
-			else if (compareWorld(command[0], "drink")) {
-				newPlayer->drink(command);
+			else if (compare(command[0], "drink")) {
+				player->drink(command);
 			}
 			else {
 				found = false;
@@ -218,8 +219,8 @@ bool World::executeCommand(vector<string>& command) {
 			break;
 		}
 		case 3: {
-			if (compareWorld(command[0], "talk")) {
-				newPlayer->talkNPC(command);
+			if (compare(command[0], "talk")) {
+				player->talkNPC(command);
 			}
 			else {
 				found = false;
@@ -227,20 +228,20 @@ bool World::executeCommand(vector<string>& command) {
 			break;
 		}
 		case 4: {
-			if (compareWorld(command[0], "open")) {
-				newPlayer->open(command);
+			if (compare(command[0], "open")) {
+				player->unLock(command);
 			}
-			else if (compareWorld(command[0], "close")) {
-				newPlayer->close(command);
+			else if (compare(command[0], "close")) {
+				player->lock(command);
 			}
-			else if (compareWorld(command[0], "take")) {
-				newPlayer->take(command);
+			else if (compare(command[0], "take")) {
+				player->take(command);
 			}
-			else if (compareWorld(command[0], "drop")) {
-				newPlayer->drop(command);
+			else if (compare(command[0], "drop")) {
+				player->drop(command);
 			}
-			else if (compareWorld(command[0], "answer")) {
-				newPlayer->answerNPC(command);
+			else if (compare(command[0], "answer")) {
+				player->answerNPC(command);
 			}
 			break;
 		}
@@ -255,7 +256,7 @@ bool World::worldTurn()
 	for (vector<Entity*>::iterator it = worldElements.begin(); it != worldElements.end(); ++it) {
 		(*it)->update();
 	}
-	return newPlayer->isAlive();
+	return player->isAlive();
 }
 
 

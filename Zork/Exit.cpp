@@ -1,7 +1,7 @@
 #include <iostream>
 #include "Exit.h"
 
-Exit::Exit(string name, string description, Room* source, Room* destination, DirectionType direction, bool isLocked, Item* key) 
+Exit::Exit(const string& name, const string& description, Room* source, Room* destination, DirectionType direction, bool isLocked, Item* key) 
 	: Entity(name, description)
 {
 	this->source = source;
@@ -16,7 +16,7 @@ Exit::~Exit()
 {
 }
 
-void Exit::showDescription()
+void Exit::showDescription() const
 {
-	cout << types[direction] << ": " << description << endl;
+	cout << "-" << types[direction] << ": " << description << endl;
 }

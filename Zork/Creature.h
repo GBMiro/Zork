@@ -4,12 +4,12 @@
 class Creature : public Entity
 {
 public:
-	Creature(string name, string description, int HP, int damage, int defense);
+	Creature(const string& name, const string& description, int HP, int damage, int defense);
 	~Creature();
 
-	virtual void showDescription();
+	virtual void showDescription() const;
 	virtual bool isAlive() const;
-	virtual void attack(const vector<string>& object) const;
+	virtual void attack(const vector<string>& action) const;
 	virtual void showStats() const;
 	virtual void update();
 	void attackPlayer() const;

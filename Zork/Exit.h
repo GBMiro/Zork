@@ -19,10 +19,10 @@ class Exit : public Entity
 {
 
 public:
-	Exit(string name, string description, Room* source, Room* destination, DirectionType direction, bool isLocked, Item* key);
+	Exit(const string& name, const string& description, Room* source, Room* destination, DirectionType direction, bool isLocked, Item* key);
 	~Exit();
 
-	void showDescription();
+	void showDescription() const;
 
 public:
 	Room* source;

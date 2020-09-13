@@ -1,7 +1,7 @@
 #include "Creature.h"
 #include "Player.h"
 
-Creature::Creature(string name, string description, int HP, int damage, int defense) 
+Creature::Creature(const string& name, const string& description, int HP, int damage, int defense) 
 	: Entity(name, description)
 {
 	type = creature;
@@ -15,7 +15,7 @@ Creature::~Creature()
 {
 }
 
-void Creature::showDescription()
+void Creature::showDescription() const
 {
 	cout << name << ": " << description << endl;
 }
@@ -25,7 +25,7 @@ bool Creature::isAlive() const
 	return currentHP > 0;
 }
 
-void Creature::attack(const vector<string>& object) const
+void Creature::attack(const vector<string>& action) const
 {
 }
 

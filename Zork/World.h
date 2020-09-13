@@ -14,10 +14,6 @@ class World
 
 		void createWorld();
 
-		void showRoomsDescriptions();
-
-		void showWorldElements();
-
 		bool executeCommand(vector<string>& command);
 
 		bool worldTurn();
@@ -25,7 +21,7 @@ class World
 	private:
 
 		vector<Entity*> worldElements;
-		Player* newPlayer;
+		Player* player;
 
 };
 

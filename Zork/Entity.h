@@ -20,16 +20,18 @@ class Entity
 {
 
 public:
-	Entity(string name, string description);
+	Entity(const string& name, const string& description);
 	~Entity();
 
-	virtual void showDescription();
+	virtual void showDescription() const;
 	virtual void update();
+
 	void changeLocation(Entity* newLocation);
-	Entity* getEntity(string name, EntityType type);
+	void getEntityElements(list<Entity*>& elements) const;
+	void getEntityElementsByType(list<Entity*>& elements, EntityType type) const;
+
+	Entity* getEntity(const string& name, EntityType type) const;
 	Entity* getPlayer() const;
-	void getEntityElements(list<Entity*>& elements);
-	void getEntityElementsByType(list<Entity*>& elements, EntityType type);
 
 
 public:

@@ -11,10 +11,10 @@ enum ItemType {
 class Item : public Entity
 {
 public:
-	Item(string name, string description, bool storage, bool canBeTaken, bool canBeEquipped, ItemType itemType, int value);
+	Item(const string& name, const string& description, bool storage, bool canBeTaken, bool canBeEquipped, ItemType itemType, const int value);
 	~Item();
 
-	void showDescription();
+	void showDescription() const;
 
 public:
 	bool storage; // if the item can contain other items

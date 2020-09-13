@@ -2,29 +2,31 @@
 #include "Exit.h"
 #include "Item.h"
 #include "NPC.h"
+#include "utils.h"
 #include <iostream>
 
-Player::Player(string name, string description, int HP, int damage, int defense)
+Player::Player(const string& name, const string& description, int HP, int damage, int defense)
 	: Creature(name, description, HP, damage, defense)
 {
 	type = player;
+	victory = false;
 }
 
 Player::~Player()
 {
 }
 
-void Player::showDescription(const vector<string>& obj)
+void Player::showDescription(const vector<string>& action) const
 {
-	if (obj.size() == 1) {
+	if (action.size() == 1) {
 		location->showDescription();
 	}
-	else if (obj.size() == 2) {
+	else if (action.size() == 2) {
 		list<Entity*> elements;
-		string lookAt = obj[1];
+		string lookAt = action[1];
 		getRoom()->getEntityElements(elements);
-		for (list<Entity*>::iterator it = elements.begin(); it != elements.end(); ++it) {
-			if (_stricmp((*it)->name.c_str(), lookAt.c_str()) == 0 || ((*it)->type  == wayOut && _stricmp((((Exit*)(*it))->types[((Exit*)(*it))->direction]).c_str(), lookAt.c_str()) == 0)) {
+		for (list<Entity*>::const_iterator it = elements.begin(); it != elements.end(); ++it) {
+			if (compare((*it)->name, lookAt) || ((*it)->type  == wayOut && compare(((Exit*)(*it))->types[((Exit*)(*it))->direction], lookAt))) {
 				(*it)->showDescription();
 				return;
 			}
@@ -34,31 +36,32 @@ void Player::showDescription(const vector<string>& obj)
 
 }
 
-void Player::go(const vector<string>& dir)
+void Player::go(const vector<string>& action)
 {
-	Exit* exit = getRoom()->getExit(dir[0]); // ((Room*)location)->getExit(dir[0]);
+	string dir = action[0];
+	Exit* exit = getRoom()->getExit(dir); // ((Room*)location)->getExit(dir[0]);
 
 	if (exit == NULL) {
-		cout << "You can't go to " << dir[0] << endl;
+		cout << "You can't go to " << dir << endl;
 	}
 	else {
 		if (exit->isLocked) {
 			cout << "The path to that exit is blocked. Maybe you need to use something..." << endl;
 		}
 		else {
-			cout << "You move " << dir[0] << " to " << ((Room*)exit->destination)->name << endl;
+			cout << "You move " << dir << " to " << ((Room*)exit->destination)->name << endl;
 			changeLocation((Room*)exit->destination);
 			location->showDescription();
 		}
 	}
 }
 
-void Player::take(const vector<string>& object)
+void Player::take(const vector<string>& action)
 {
-	string itemName = object[1];
-	//cout << object.size() << endl;
+	string itemName = action[1];
+
 	//We need to check if we are taking an item from another one or just taking one from the room
-	if (object.size() == 2) {
+	if (action.size() == 2) {
 		Item* itemFound = (Item*)location->getEntity(itemName, item);
 		if (itemFound != NULL) {
 			if (itemFound->canBeTaken) {
@@ -74,8 +77,8 @@ void Player::take(const vector<string>& object)
 		}
 	}
 	else {
-		if (object.size() == 4) {
-			string storageName = object[3];
+		if (action.size() == 4) {
+			string storageName = action[3];
 			Item* storageFound = (Item*)getEntity(storageName, item);
 
 			//Maybe the storage is in the room, not in our inventory
@@ -102,13 +105,13 @@ void Player::take(const vector<string>& object)
 	}
 }
 
-void Player::drop(const vector<string>& object) 
+void Player::drop(const vector<string>& action) 
 {
-	string itemName = object[1];
+	string itemName = action[1];
 	Item* itemFound = (Item*)getEntity(itemName, item);
 	
 	//We need to check if we are putting an item in another one or just dropping one.
-	if (object.size() == 2) {
+	if (action.size() == 2) {
 		if (itemFound != NULL) {
 			if (itemFound == weaponEquipped) {
 				weaponEquipped = NULL;
@@ -126,8 +129,8 @@ void Player::drop(const vector<string>& object)
 		}
 	}
 	else {
-		if (object.size() == 4) {
-			string storageName = object[3];
+		if (action.size() == 4) {
+			string storageName = action[3];
 			Item* storageFound = (Item*)getEntity(storageName, item);
 
 			//Maybe the storage is in the room, not in our inventory
@@ -162,7 +165,7 @@ void Player::drop(const vector<string>& object)
 
 }
 
-void Player::open(const vector<string>& action)
+void Player::unLock(const vector<string>& action)
 {
 	string dir = action[1];
 	string itemUsed = action[3];
@@ -179,18 +182,18 @@ void Player::open(const vector<string>& action)
 		}
 		else {
 			if (exit->key == itemFound) {
-				cout << "You used " << itemUsed << " to open the pass to the " << dir << endl;
+				cout << "You used " << itemUsed << " to open the door to the " << dir << endl;
 				exit->isLocked = false;
 			}
 			else {
-				cout << "This item can't be used to open the path to the " << dir << endl;
+				cout << "This item can't be used to open the door to the " << dir << endl;
 			}
 		}
 	}
 
 }
 
-void Player::close(const vector<string>& action)
+void Player::lock(const vector<string>& action)
 {
 	string dir = action[1];
 	string itemUsed = action[3];
@@ -203,15 +206,15 @@ void Player::close(const vector<string>& action)
 	}
 	else {
 		if (itemFound == NULL) {
-			cout << "You don't have the proper item to unlock the path" << endl;
+			cout << "You don't have the proper item to unlock the door" << endl;
 		}
 		else {
 			if (exit->key == itemFound) {
-				cout << "You close the path leading to the " << dir << endl;
+				cout << "You close the door leading to the " << dir << endl;
 				exit->isLocked = true;
 			}
 			else {
-				cout << "This item can't be used to close the path to the " << dir << endl;
+				cout << "This item can't be used to close the door to the " << dir << endl;
 			}
 		}
 	}
@@ -228,15 +231,15 @@ void Player::attack(const vector<string>& action)
 			creatureFound->currentHP = creatureFound->currentHP - damageDealt < 0 ? 0 : creatureFound->currentHP - damageDealt;
 			cout << "You attack the creature dealing " << damageDealt << " damage." << endl;
 			if (!creatureFound->isAlive()) {
-				cout << "You killed the creature." << endl;
+				cout << "You killed the " << creatureName << endl;
 			}
 		}
 		else {
-			cout << "The creature is dead." << endl;
+			cout << "The " << creatureName << " is dead." << endl;
 		}
 	}
 	else {
-		cout << "There is no creature named " << creatureName << endl;
+		cout << "There is no creature " << creatureName << " here" << endl;
 	}
 }
 
@@ -326,7 +329,7 @@ void Player::loot(const vector<string>& action)
 		}
 	}
 	else {
-		cout << "There is no one called " << creatureName << endl;
+		cout << "There is no " << creatureName << " creature here" << endl;
 	}
 }
 
@@ -393,9 +396,20 @@ int Player::getTotalDefense() const
 
 void Player::update()
 {
+	string dragonName = "dragon";
+	Creature* dragonFound = (Creature*)getRoom()->getEntity(dragonName, creature);
+
+	if (dragonFound != NULL) {
+		if (!dragonFound->isAlive() && !victory) {
+			cout << "Congratulations, you have beaten the game! You set free your village from the tirany of the last dragon!" << endl;
+			cout << "You can loot the dragon to see if it had something, revisit all rooms... To close the game, type quit." << endl;
+			cout << "Thank you for playing!" << endl;
+			victory = true;
+		}
+	}
 }
 
-void Player::talkNPC(const vector<string>& action)
+void Player::talkNPC(const vector<string>& action) const
 {
 	string npcName = action[2];
 	NPC* npcFound = (NPC*)getRoom()->getEntity(npcName, npc);
@@ -404,7 +418,7 @@ void Player::talkNPC(const vector<string>& action)
 		npcFound->talkToPlayer();
 	}
 	else {
-		cout << "There is no NPC named " << npcName << "here." << endl;
+		cout << "There is no " << npcName << " npc here." << endl;
 	}
 }
 
@@ -424,20 +438,20 @@ void Player::answerNPC(const vector<string>& action)
 		}
 	}
 	else {
-		cout << "There is no NPC named " << npcName << " here." << endl;
+		cout << "There is no " << npcName << " npc here." << endl;
 	}
 }
 
 
 
-void Player::showInventory()
+void Player::showInventory() const
 {
 	list<Entity*> inventoryItems;
 	getEntityElements(inventoryItems);
 
 	if (inventoryItems.size() != 0) {
 		cout << "-- Inventory --" << endl;
-		for (list<Entity*>::iterator it = inventoryItems.begin(); it != inventoryItems.end(); ++it) {
+		for (list<Entity*>::const_iterator it = inventoryItems.begin(); it != inventoryItems.end(); ++it) {
 			(*it)->showDescription();
 		}
 	}
@@ -462,7 +476,7 @@ void Player::showStats(const vector<string>& action) const
 		NPC* npcFound = (NPC*)getRoom()->getEntity(name, npc);
 		
 		if (npcFound == NULL && creatureFound == NULL) {
-			cout << "There is no creature called " << name << " here." << endl;
+			cout << "There is no " << name << " creature/npc here." << endl;
 		}
 		else if (npcFound == NULL) {
 			creatureFound->showStats();

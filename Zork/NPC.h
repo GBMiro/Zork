@@ -3,10 +3,10 @@
 class NPC : public Creature
 {
 public:
-	NPC(string name, string description, int HP, int damage, int defense, string dialog, bool interactive, string answer);
+	NPC(const string& name, const string& description, int HP, int damage, int defense, const string& dialog, bool interactive, const string& answer);
 	~NPC();
 
-	void talkToPlayer();
+	void talkToPlayer() const;
 	void checkAnswer(string answer);
 	void attackPlayer() const;
 	void update();

@@ -1,6 +1,6 @@
 #include "Item.h"
 
-Item::Item(string name, string description, bool storage, bool canBeTaken, bool canBeEquipped, ItemType itemType, int value)
+Item::Item(const string& name, const string& description, bool storage, bool canBeTaken, bool canBeEquipped, ItemType itemType, const int value)
 	: Entity(name, description)
 {
 	type = item;
@@ -15,7 +15,7 @@ Item::~Item()
 {
 }
 
-void Item::showDescription()
+void Item::showDescription() const
 {
 	cout << name << ": " << description << ".";
 
@@ -32,9 +32,10 @@ void Item::showDescription()
 			break;
 	}
 
+	//Check if this item has items inside
 	if (entityElements.size() != 0) {
 		cout << "Contains the following: " << endl;
-		for (list<Entity*>::iterator it = entityElements.begin(); it != entityElements.end(); ++it) {
+		for (list<Entity*>::const_iterator it = entityElements.begin(); it != entityElements.end(); ++it) {
 			cout << "- " << (*it)->name << endl;
 		}
 	}

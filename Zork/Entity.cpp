@@ -1,8 +1,9 @@
 #include "Entity.h"
+#include "utils.h"
 
 using namespace std;
 
-Entity::Entity(string name, string description)
+Entity::Entity(const string& name, const string& description)
 {
 	this->name = name;
 	this->description = description;
@@ -12,7 +13,7 @@ Entity::~Entity()
 {
 }
 
-void Entity::showDescription()
+void Entity::showDescription() const
 {
 }
 
@@ -33,10 +34,10 @@ void Entity::changeLocation(Entity * newLocation)
 	}
 }
 
-Entity* Entity::getEntity(string name, EntityType type)
+Entity* Entity::getEntity(const string& name, EntityType type) const
 {
-	for (list<Entity*>::iterator iter = entityElements.begin(); iter != entityElements.end(); ++iter) {
-		if ((*iter)->type == type && _stricmp((*iter)->name.c_str(), name.c_str()) == 0) {
+	for (list<Entity*>::const_iterator iter = entityElements.begin(); iter != entityElements.end(); ++iter) {
+		if ((*iter)->type == type && compare((*iter)->name, name)) {
 			return *iter;
 		}
 	}
@@ -53,16 +54,16 @@ Entity* Entity::getPlayer() const
 	return NULL;
 }
 
-void Entity::getEntityElements(list<Entity*>& elements)
+void Entity::getEntityElements(list<Entity*>& elements) const
 {
-	for (list<Entity*>::iterator iter = entityElements.begin(); iter != entityElements.end(); ++iter) {
+	for (list<Entity*>::const_iterator iter = entityElements.begin(); iter != entityElements.end(); ++iter) {
 		elements.push_back(*iter);
 	}
 }
 
-void Entity::getEntityElementsByType(list<Entity*>& elements, EntityType type)
+void Entity::getEntityElementsByType(list<Entity*>& elements, EntityType type) const
 {
-	for (list<Entity*>::iterator iter = entityElements.begin(); iter != entityElements.end(); ++iter) {
+	for (list<Entity*>::const_iterator iter = entityElements.begin(); iter != entityElements.end(); ++iter) {
 		if ((*iter)->type == type) {
 			elements.push_back(*iter);
 		}
