@@ -251,12 +251,13 @@ bool World::executeCommand(vector<string>& command) {
 	return found;
 }
 
-bool World::worldTurn()
+void World::worldTurn()
 {
-	for (vector<Entity*>::iterator it = worldElements.begin(); it != worldElements.end(); ++it) {
-		(*it)->update();
+	if (player->isAlive()) {
+		for (vector<Entity*>::iterator it = worldElements.begin(); it != worldElements.end(); ++it) {
+			(*it)->update();
+		}
 	}
-	return player->isAlive();
 }
 
 

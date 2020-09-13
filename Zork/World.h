@@ -16,7 +16,7 @@ class World
 
 		bool executeCommand(vector<string>& command);
 
-		bool worldTurn();
+		void worldTurn();
 
 	private:
 

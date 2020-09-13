@@ -22,8 +22,6 @@ int main()
 	cout << "But years ago, their numbers were reduced to just one. Many tried to kill it, but none succeded." << endl;
 	cout << "You find yourself in the castle where all of them used to live to slay the last one and free your village from their tirany...\n\n" << endl;
 
-	bool gameOnGoing = true;
-
 	char nextChar;
 
 	string line = "";
@@ -32,7 +30,7 @@ int main()
 
 	command.push_back("look");
 
-	while (gameOnGoing) {
+	while (1) {
 
 		if (_kbhit() != 0) {
 
@@ -76,7 +74,7 @@ int main()
 		if (command.size() > 0) {
 			line = "";
 			command.clear();
-			gameOnGoing = myZorkWorld.worldTurn();
+			myZorkWorld.worldTurn();
 		}
 	}
 
